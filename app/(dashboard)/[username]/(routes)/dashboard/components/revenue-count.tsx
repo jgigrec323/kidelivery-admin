@@ -11,7 +11,7 @@ async function RevenueCount() {
   return (
     <Card className="flex-1 bg-black text-white">
       <CardHeader>
-        <CardTitle>Revenue Overview</CardTitle>
+        <CardTitle>Revenue</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-3xl font-bold text-white">

@@ -28,9 +28,7 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <MainWrapper>
-        <div>{children}</div>
-      </MainWrapper>
+      <MainWrapper>{children}</MainWrapper>
     </>
   );
 }
