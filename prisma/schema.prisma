@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model delivery {
+  id               String          @id
+  userId           String
+  parcelId         String          @unique(map: "Delivery_parcelId_key")
+  status           delivery_status @default(PENDING)
+  pickupDate       DateTime
+  estimatedArrival DateTime
+  isDelivered      Boolean
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime
+  parcel           parcel          @relation(fields: [parcelId], references: [id], map: "Delivery_parcelId_fkey")
+  user             user            @relation(fields: [userId], references: [id], map: "Delivery_userId_fkey")
+  order            order[]
+
+  @@index([userId], map: "Delivery_userId_fkey")
+}
+
+model order {
+  id         String       @id
+  amount     Int
+  status     order_status @default(PENDING)
+  userId     String
+  deliveryId String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime
+  delivery   delivery     @relation(fields: [deliveryId], references: [id], map: "Order_deliveryId_fkey")
+  user       user         @relation(fields: [userId], references: [id], map: "Order_userId_fkey")
+
+  @@index([deliveryId], map: "Order_deliveryId_fkey")
+  @@index([userId], map: "Order_userId_fkey")
+}
+
+model parcel {
+  id               String             @id
+  trackingNumber   String             @unique(map: "Parcel_trackingNumber_key")
+  description      String
+  parcelType       parcel_parcelType
+  senderCommune    String
+  senderQuartier   String
+  pickupDate       DateTime
+  pickupTime       String
+  deliveryCommune  String
+  deliveryQuartier String
+  dropoffDate      DateTime
+  dropoffTime      String
+  isFeeAtDoor      Boolean
+  feeAtDoor        Int?
+  shopId           String
+  status           parcel_status      @default(PENDING)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime
+  name             String
+  recipientName    String
+  recipientPhone   String
+  delivery         delivery?
+  shop             shop               @relation(fields: [shopId], references: [id], map: "Parcel_shopId_fkey")
+  parcelinmultiple parcelinmultiple[]
+
+  @@index([shopId], map: "Parcel_shopId_fkey")
+}
+
+model parcelinmultiple {
+  id             String  @id
+  parcelId       String
+  commune        String
+  quartier       String
+  isFeeAtDoor    Boolean
+  feeAtDoor      Int?
+  recipientName  String
+  recipientPhone String
+  parcel         parcel  @relation(fields: [parcelId], references: [id], map: "ParcelInMultiple_parcelId_fkey")
+
+  @@index([parcelId], map: "ParcelInMultiple_parcelId_fkey")
+}
+
+model shop {
+  id        String   @id
+  name      String
+  userId    String
+  commune   String
+  quartier  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  address   String
+  parcel    parcel[]
+  user      user     @relation(fields: [userId], references: [id], map: "Shop_userId_fkey")
+
+  @@index([userId], map: "Shop_userId_fkey")
+}
+
+model user {
+  id          String     @id
+  name        String
+  phoneNumber String
+  role        user_role  @default(SELLER)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  delivery    delivery[]
+  order       order[]
+  shop        shop[]
+}
+
+enum order_status {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+enum delivery_status {
+  PENDING
+  IN_TRANSIT
+  COMPLETED
+  CANCELLED
+}
+
+enum parcel_parcelType {
+  SINGLE
+  MULTIPLE
+  CARGO
+}
+
+enum user_role {
+  CUSTOMER
+  SELLER
+  DELIVERY_AGENT
+  ADMIN
+}
+
+enum parcel_status {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  RETURNED
+}

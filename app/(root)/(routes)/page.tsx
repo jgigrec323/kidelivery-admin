@@ -1,7 +1,5 @@
-import React from "react";
-
 const SetupPage = () => {
-  return <>Hello</>;
+  return null;
 };
 
 export default SetupPage;
