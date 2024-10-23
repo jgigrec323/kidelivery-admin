@@ -1,6 +1,5 @@
 import CustomError from "@/components/custom-error";
 import MainWrapper from "@/components/main-wrapper";
-import Sidebar from "@/components/sidebar";
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
