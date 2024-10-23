@@ -14,20 +14,14 @@ export default function SetupLayout({
   useEffect(() => {
     if (isLoaded) {
       if (!user) {
-        // Redirect to sign-in if no user is found
         router.push("/");
       } else {
-        // Redirect to the user's dashboard if authenticated
         router.push(`/${user.username}/dashboard`);
       }
     }
   }, [isLoaded, user, router]);
 
-  // If the user data hasn't loaded yet, render a loading state
   if (!isLoaded) {
-    return <p>Loading...</p>; // You can also display a spinner here
+    return <p>Loading...</p>;
   }
-
-  // Once all checks pass and user is authenticated, render the children
-  return <>{children}</>;
 }
