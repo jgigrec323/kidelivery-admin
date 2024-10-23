@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
 import Sidebar from "./sidebar";
+import TopBar from "./top-bar";
 
 function MainWrapper({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +11,10 @@ function MainWrapper({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main Content Section */}
-      <section className="flex-1  p-4">{children}</section>
+      <section className="flex-1  p-4">
+        <TopBar></TopBar>
+        <div>{children}</div>
+      </section>
     </main>
   );
 }
