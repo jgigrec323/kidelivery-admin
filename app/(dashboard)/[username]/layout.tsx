@@ -1,4 +1,5 @@
 import CustomError from "@/components/custom-error";
+import MainWrapper from "@/components/main-wrapper";
 import Sidebar from "@/components/sidebar";
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
@@ -28,8 +29,9 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <Sidebar />
-      <div>{children}</div>
+      <MainWrapper>
+        <div>{children}</div>
+      </MainWrapper>
     </>
   );
 }
