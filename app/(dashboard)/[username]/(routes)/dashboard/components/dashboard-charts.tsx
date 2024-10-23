@@ -2,7 +2,9 @@ import React from "react";
 import prismadb from "@/lib/prismadb";
 import RevenueChart from "./revenue-chart";
 import DeliveriesChart from "./deliveries-chart";
+import DeliveriesByCommuneChart from "./deliveries-by-commune";
 import { delivery, order } from "@prisma/client"; // Import Prisma types
+import DeliveriesOverTimeChart from "./deliveries-over-time";
 
 interface DashboardChartsProps {
   deliveries: delivery[]; // Deliveries will come from parent
@@ -22,12 +24,18 @@ const DashboardCharts: React.FC<DashboardChartsProps> = async ({
   }, new Array(12).fill(0)); // Initialize array for 12 months
 
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-2">
-      {/* Pass calculated revenue data to the chart */}
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2 mt-2">
+      {/* First Row */}
       <RevenueChart monthlyRevenue={monthlyRevenue} />
+      <DeliveriesByCommuneChart deliveries={deliveries} />
 
-      {/* Deliveries data is passed from parent */}
+      {/* Second Row */}
       <DeliveriesChart deliveries={deliveries} />
+
+      {/* Fourth Chart (Placeholder) */}
+      <DeliveriesOverTimeChart
+        deliveries={deliveries}
+      ></DeliveriesOverTimeChart>
     </div>
   );
 };
