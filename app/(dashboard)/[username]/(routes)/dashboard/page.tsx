@@ -18,7 +18,7 @@ const Dashboard = async () => {
   });
 
   return (
-    <div className="">
+    <>
       <MainTitle title="Tableau de board" />
       <div className="mt-5 space-y-6">
         <div className="flex justify-between gap-6">
@@ -30,7 +30,7 @@ const Dashboard = async () => {
         {/* Charts Section */}
         <DashboardCharts deliveries={deliveriesWithParcels} />
       </div>
-    </div>
+    </>
   );
 };
 
