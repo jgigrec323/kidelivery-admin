@@ -5,7 +5,9 @@ import prismadb from "@/lib/prismadb";
 import React from "react";
 
 async function Commandes() {
-  const parcels = await prismadb.parcel.findMany(); // Fetch parcels on the server
+  const parcels = await prismadb.parcel.findMany({
+    include: { delivery: true },
+  }); // Fetch parcels on the server
 
   return (
     <>

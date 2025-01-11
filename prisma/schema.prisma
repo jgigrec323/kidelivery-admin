@@ -17,11 +17,14 @@ model delivery {
   isDelivered      Boolean
   createdAt        DateTime        @default(now())
   updatedAt        DateTime
+  delivererId      String?
+  deliverer        deliverer?      @relation(fields: [delivererId], references: [id], map: "Delivery_delivererId_fkey")
   parcel           parcel          @relation(fields: [parcelId], references: [id], map: "Delivery_parcelId_fkey")
   user             user            @relation(fields: [userId], references: [id], map: "Delivery_userId_fkey")
   order            order[]
 
   @@index([userId], map: "Delivery_userId_fkey")
+  @@index([delivererId], map: "Delivery_delivererId_fkey")
 }
 
 model order {
@@ -109,6 +112,16 @@ model user {
   shop        shop[]
 }
 
+model deliverer {
+  id          String           @id
+  name        String
+  phoneNumber String
+  status      deliverer_status @default(AVAILABLE)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime
+  delivery    delivery[]
+}
+
 enum order_status {
   PENDING
   PAID
@@ -140,4 +153,10 @@ enum parcel_status {
   IN_TRANSIT
   DELIVERED
   RETURNED
+}
+
+enum deliverer_status {
+  AVAILABLE
+  ASSIGNED
+  UNAVAILABLE
 }

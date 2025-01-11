@@ -1,11 +1,25 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { parcel } from "@prisma/client";
 import { FaEye, FaUserPlus, FaEdit } from "react-icons/fa";
 
-// Define the columns based on the Parcel model from Prisma
-export const columns: ColumnDef<parcel>[] = [
+interface ParcelWithDelivery extends parcel {
+  delivery?: {
+    id: string;
+    delivererId: string | null;
+  };
+}
+
+interface Deliverer {
+  id: string;
+  name: string;
+}
+
+export const createColumns = (
+  handleAssignClick: (parcel: ParcelWithDelivery) => void,
+  handleStatusClick: (parcel: ParcelWithDelivery) => void,
+  handleInfoClick: (parcel: ParcelWithDelivery) => void,
+  deliverers: Deliverer[] // Pass the full deliverer list here
+): ColumnDef<ParcelWithDelivery>[] => [
   {
     accessorKey: "trackingNumber",
     header: "Suivi",
@@ -59,7 +73,17 @@ export const columns: ColumnDef<parcel>[] = [
         ? `${row.original.feeAtDoor} GNF`
         : "Non applicable",
   },
-  // Actions Column with tooltips
+  {
+    accessorKey: "delivery.delivererId",
+    header: "Livreur",
+    cell: ({ row }) => {
+      const delivererId = row.original.delivery?.delivererId;
+      const delivererName = deliverers.find(
+        (deliverer) => deliverer.id === delivererId
+      )?.name;
+      return delivererName ?? "Unassigned";
+    },
+  },
   {
     id: "actions",
     header: "Actions",
@@ -69,6 +93,7 @@ export const columns: ColumnDef<parcel>[] = [
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white p-1 rounded"
             title="Assigner"
+            onClick={() => handleAssignClick(row.original)}
           >
             <FaUserPlus />
           </button>
@@ -76,12 +101,14 @@ export const columns: ColumnDef<parcel>[] = [
         <button
           className="bg-green-500 hover:bg-green-700 text-white p-1 rounded"
           title="Voir"
+          onClick={() => handleInfoClick(row.original)}
         >
           <FaEye />
         </button>
         <button
           className="bg-yellow-500 hover:bg-yellow-700 text-white p-1 rounded"
           title="Changer Statut"
+          onClick={() => handleStatusClick(row.original)}
         >
           <FaEdit />
         </button>

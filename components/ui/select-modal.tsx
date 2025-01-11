@@ -1,33 +1,49 @@
-// components/SelectModal.tsx
+// SelectModal.tsx
 
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Select, SelectItem } from "@/components/ui/select";
+import React, { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+
+interface Option {
+  label: string;
+  value: string;
+}
 
 interface SelectModalProps {
   title: string;
-  options: string[];
+  options: Option[];
   onSelect: (value: string) => void;
   open: boolean;
   onClose: () => void;
 }
 
-export const SelectModal: React.FC<SelectModalProps> = ({
+const SelectModal: React.FC<SelectModalProps> = ({
   title,
   options,
   onSelect,
   open,
   onClose,
 }) => {
-  const [selected, setSelected] = useState<string>("");
+  const [selectedValue, setSelectedValue] = useState<string | null>(null);
+
+  const handleSelectChange = (value: string) => {
+    setSelectedValue(value);
+  };
+
+  const handleConfirm = () => {
+    if (selectedValue) {
+      onSelect(selectedValue);
+      onClose();
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -35,24 +51,32 @@ export const SelectModal: React.FC<SelectModalProps> = ({
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <Select onValueChange={(value) => setSelected(value)}>
-          <SelectItem value="">Select an option</SelectItem>
-          {options.map((option) => (
-            <SelectItem key={option} value={option}>
-              {option}
-            </SelectItem>
-          ))}
+
+        {/* Dropdown Select */}
+        <Select onValueChange={handleSelectChange}>
+          <SelectTrigger className="w-full mt-4">
+            {selectedValue
+              ? options.find((option) => option.value === selectedValue)?.label
+              : "Select an option"}
+          </SelectTrigger>
+          <SelectContent className="max-h-60 overflow-auto">
+            {options.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
-        <Button
-          onClick={() => {
-            onSelect(selected);
-            onClose();
-          }}
-          className="mt-4"
-        >
-          Confirmer
+
+        <Button onClick={handleConfirm} className="mt-4 w-full">
+          Confirm
+        </Button>
+        <Button variant="outline" onClick={onClose} className="mt-2 w-full">
+          Cancel
         </Button>
       </DialogContent>
     </Dialog>
   );
 };
+
+export default SelectModal;
