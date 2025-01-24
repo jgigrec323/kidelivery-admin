@@ -1,6 +1,6 @@
 import MainTitle from "@/components/main-title";
 import React from "react";
-import ShopWrapper from "./components/commande-wrapper";
+import ShopWrapper from "./components/shop-wrapper";
 import prismadb from "@/lib/prismadb";
 
 async function ShopsPage() {
